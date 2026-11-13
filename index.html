@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سرايا الألفي - مودرن</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fdf8f1;--card:#fff;--ink:#2b1a11;--mut:#8a7362;--brown:#4a2315;--red:#c13a22;--gold:#ffb938;--line:#efe2d2;--shadow:0 12px 32px #2b1a1111;--r:20px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo}
+.top{position:sticky;top:0;z-index:50;background:#ffffffcc;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;gap:10px;align-items:center}
+.logo{font-family:Reem Kufi;font-weight:700;color:var(--brown);font-size:1.3rem}
+.search{flex:1;max-width:480px;background:#f6efe6;border:1px solid var(--line);border-radius:99px;padding:10px 16px}
+.cart{background:var(--brown);color:#fff;border-radius:99px;padding:8px 16px;font-weight:800;border:0}
+.chips{position:sticky;top:54px;z-index:40;background:#fdf8f1e6;backdrop-filter:blur(10px);display:flex;gap:8px;overflow:auto;padding:10px 14px;border-bottom:1px solid var(--line)}
+.chip{flex:none;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:7px 14px;font-weight:700;white-space:nowrap}
+.chip.active{background:var(--brown);color:#fff}
+.hero{max-width:1200px;margin:auto;padding:20px 14px;display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+.hero h1{font-family:Reem Kufi;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1;margin:0;color:var(--brown)}
+.hero h1 span{color:var(--red)} .hero p{color:var(--mut)}
+.btn{border-radius:99px;padding:12px 20px;font-weight:900;border:0;cursor:pointer}
+.btn-b{background:var(--brown);color:#fff} .btn-g{background:linear-gradient(#ffd77a,#ff9d1a);color:#3a1a05}
+main{max-width:1200px;margin:auto;padding:10px 14px 100px}
+.sec{padding-top:18px} .sec h2{font-family:Reem Kufi;color:var(--brown);margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+.card.royal{border:1.5px solid var(--gold)} .title{font-weight:900;font-size:1.15rem}
+.desc{color:var(--mut);font-size:.85rem;margin:6px 0} .tags span{background:#f6efe6;border:1px solid var(--line);border-radius:99px;padding:2px 8px;font-size:.7rem;color:var(--mut);margin:2px}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+.price{font-weight:900;color:var(--brown)} .add{background:var(--brown);color:#fff;border:0;border-radius:99px;padding:7px 14px;font-weight:800}
+.row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.row .nm{flex:1;font-weight:800} .row small{display:block;color:var(--mut);font-weight:400}
+.drawer{position:fixed;inset:0;z-index:99;display:none}.drawer.on{display:block}.bg{position:absolute;inset:0;background:#0005}.panel{position:absolute;left:0;right:0;bottom:0;top:0;margin-right:auto;width:min(420px,100%);background:var(--bg);display:flex;flex-direction:column}
+.items{flex:1;overflow:auto;padding:12px} .ci{display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:8px}
+.tot{display:flex;justify-content:space-between;font-weight:900;padding:12px;border-top:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);background:var(--brown);color:#fff;border-radius:99px;padding:8px 16px;opacity:0;transition:.25s;z-index:200}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="top"><div class="logo">🔥 سرايا الألفي</div><input class="search" id="q" placeholder="ابحث..."><button class="cart" id="open">🛒 <span id="cnt">0</span></button></div>
+<div class="chips" id="chips"></div>
+<main id="main"></main>
+<div class="drawer" id="drawer"><div class="bg" onclick="closeD()"></div><div class="panel"><div style="padding:14px;font-weight:900;display:flex;justify-content:space-between"><span>سلتك</span><button onclick="closeD()">✕</button></div><div class="items" id="items"></div><div class="tot"><span>الإجمالي</span><b id="total">0 ج.م</b></div><div style="padding:12px;display:flex;flex-direction:column;gap:8px"><input id="nm" placeholder="الاسم"><input id="ph" placeholder="الموبايل"><textarea id="ad" placeholder="العنوان" rows="2"></textarea><a id="wa" class="btn btn-b" style="text-align:center;background:#25d366" target="_blank">إرسال واتساب</a></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+// الكود كامل - كل الأقسام من صورك
+const PH='201015861991';
+const DATA=[{t:'الصواني والسفر',icon:'🍽️',type:'tray',items:[{n:'صنية التاج',d:'نص كفتة / نص فرخة مشوية / ممبار / أرز بسمتي / سلطة خضراء / طحينة / عيش',p:590},{n:'صنية الباشا',d:'نص كفتة / نص فرخة مشوية / نص ممبار / نص سجق / رز بسمتي / عيش / سلطة خضراء / طحينة',p:990},{n:'صنية الكبير',d:'نص كفتة / نص شيش / ربع طرب / فرخة مشوية / ممبار / أرز بسمتي / محشي / سمبوسة / سلطة خضراء / طحينة / عيش',p:1300},{n:'صنية العز',d:'تلت كفتة / نص بط / نص ممبار / ورقة سجق / 2 حمام / تلت شيش / رز بسمتي / محشي / سمبوسة / رز أبيض / طحينة / سلطة خضراء / عيش',p:1990},{n:'صنية الهيبة',d:'نص كفتة / نص فراخ مشوية / نص طرب / ربع سجق / 2 حمام / ممبار / طاجن كوارع / طاجن لحمة بصل / سمبوسة / رز أبيض / رز بسمتي / طحينة / سلطة خضراء / عيش',p:2300},{n:'صنية الملوك',d:'نص كفتة / نص سجق / نص طرب / 2 حمام / نص ممبار / 1 بط / ورق عنب / سمبوسة / طحينة / سلطة خضراء / عيش',p:2850},{n:'سفرة الألفي',d:'2 فرخة شيش / 2 كيلو ممبار / كيلو كفتة / نص طرب / نص ريش / نص كباب / سجق / رز بسمتي / مكس مقبلات / محشي / سمبوسة / طحينة / سلطة خضراء / عيش',p:5000},{n:'السفرة الملكية',d:'فرخة رومي / 2 كيلو ممبار / كيلو كفتة / كيلو سجق / نص طرب / نص ريش / نص كباب / محشي / مكس مقبلات / طحينة / سلطة خضراء / عيش',p:7500}]},{t:'وجبات أفراد',icon:'👤',type:'row',items:[{n:'وجبة الفرد',p:200},{n:'وجبة الطرب',p:250},{n:'ميكس جريل',p:400}]},{t:'مطبخ الألفي',icon:'🥘',type:'row',items:[{n:'ممبار',p:85},{n:'محشي كرنب',p:75},{n:'سمبوسك لحم',p:75},{n:'سمبوسك جبنة',p:65},{n:'صنية رقاق',p:185},{n:'بطاطس محمرة',p:35},{n:'مقبلات الألفي',p:185},{n:'أرز أبيض',p:45},{n:'أرز شعرية',p:49},{n:'أرز بسمتي',p:65},{n:'أرز معمر',p:85},{n:'فتة ساده',p:75},{n:'فتة لحمة',p:285},{n:'ورق عنب',p:75},{n:'محشي مشكل',p:85}]},{t:'مشويات الألفي',icon:'🔥',type:'mix',items:[{n:'كباب بتلو',pr:[490,1300],lb:['ثلث','كيلو']},{n:'كباب ضاني',pr:[525,1400],lb:['ثلث','كيلو']},{n:'ريش بتلو',pr:[545,1450],lb:['ثلث','كيلو']},{n:'ريش ضاني',pr:[585,1550],lb:['ثلث','كيلو']},{n:'مشكل بتلو',pr:[415,1100],lb:['ثلث','كيلو']},{n:'مشكل ضاني',pr:[435,1150],lb:['ثلث','كيلو']},{n:'كفتة بتلو',pr:[340,900],lb:['ثلث','كيلو']},{n:'كفتة ضاني',pr:[375,1000],lb:['ثلث','كيلو']},{n:'سجق مشوي',pr:[395,1050],lb:['ثلث','كيلو']},{n:'طرب',pr:[470,1250],lb:['ثلث','كيلو']},{n:'كبدة مشوية',pr:[470,1250],lb:['ثلث','كيلو']},{n:'موزة مشوية',pr:[475],lb:['كيلو']}]},{t:'مميز الألفي',icon:'⭐',type:'row',items:[{n:'موزة تركي فخار',p:550},{n:'مبكبكة باللحمة',p:285},{n:'كبسة مضغوطة فراخ',p:295},{n:'ورقة لحمة',p:285},{n:'ورقة سجق',p:250},{n:'ورقة كبدة',p:250},{n:'ورقة الألفي',p:295}]},{t:'الطيور',icon:'🍗',type:'row',items:[{n:'فرخة شيش',p:320},{n:'فرخة فحم',p:300},{n:'شيش طاووق',p:650},{n:'فرد حمام محشي',p:220},{n:'فرد حمام مشوي',p:190}]},{t:'الطواجن',icon:'🍲',type:'row',items:[{n:'طاجن ملوخية',p:60},{n:'طاجن بامية لحم',p:285},{n:'طاجن تورللي',p:255},{n:'طاجن لسان عصفور',p:255},{n:'طاجن كباب حلة',p:295},{n:'طاجن كوارع',p:320},{n:'طاجن كوارع ورق عنب',p:295},{n:'طاجن كوارع بالفتة',p:350},{n:'طاجن عكاوي بصل',p:350},{n:'طاجن حمام بالارز المعمر',p:230}]},{t:'البط',icon:'🦆',type:'row',items:[{n:'بطة كاملة',p:850},{n:'نص بطة',p:425},{n:'ربع بطة',p:220}]},{t:'الشوربة',icon:'🍜',type:'row',items:[{n:'شوربة لسان عصفور',p:30},{n:'شوربة كريمة',p:100}]},{t:'السلطات',icon:'🥗',type:'row',items:[{n:'سلطة خضراء',p:25},{n:'سلطة طحينة',p:25},{n:'صوص المندي',p:25},{n:'بابا غنوج',p:35},{n:'سلطة باذنجان',p:25},{n:'زبادي خيار',p:45},{n:'خيار مخلل',p:25},{n:'طماطم متبلة',p:35},{n:'سلطة مخلل',p:25},{n:'ثومية',p:45},{n:'كلوسلو',p:45},{n:'مشكل الألفي',p:75}]}];
+// باقي الوظائف
+let cart={};const $=s=>document.querySelector(s);
+function build(){document.getElementById('chips').innerHTML=DATA.map((c,i)=>`<button class="chip ${i==0?'active':''}" data-i="${i}">${c.icon} ${c.t}</button>`).join('');document.getElementById('main').innerHTML=DATA.map((c,ci)=>{let inner='';if(c.type=='tray'){inner=`<div class="grid">${c.items.map(it=>`<div class="card ${it.p>=2850?'royal':''} it" data-t="${it.n} ${it.d}"><div class="title">${it.n}</div><div class="tags">${it.d.split(' / ').map(x=>`<span>${x}</span>`).join('')}</div><div class="desc">${it.d}</div><div class="foot"><div class="price">${it.p} ج.م</div><button class="add" onclick="addT('${it.n}',${it.p})">أضف +</button></div></div>`).join('')}</div>`}else if(c.type=='mix'){inner=`<div class="grid">${c.items.map(it=>`<div class="card it" data-t="${it.n}"><div class="title">${it.n}</div><div class="foot">${it.pr.map((p,pi)=>`<button class="add" style="background:#f6efe6;color:#4a2315;border:1px solid #efe2d2" onclick="addT('${it.n} (${it.lb[pi]})',${p})">${it.lb[pi]} ${p}ج</button>`).join('')}</div></div>`).join('')}</div>`}else{inner=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px">${c.items.map(it=>`<div class="row it" data-t="${it.n}"><div class="nm">${it.n}</div><div class="price">${it.p} ج.م</div><button class="add" onclick="addT('${it.n}',${it.p})">+</button></div>`).join('')}</div>`}return `<section class="sec" id="s${ci}"><h2>${c.icon} ${c.t}</h2>${inner}</section>`}).join('')}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1500)}
+window.addT=(n,p)=>{const k=n;if(!cart[k])cart[k]={name:n,price:p,q:0};cart[k].q++;draw();toast('تمت الإضافة ✓');document.getElementById('drawer').classList.add('on')}
+function draw(){let tot=0,q=0;let h='';Object.values(cart).forEach(it=>{tot+=it.price*it.q;q+=it.q;h+=`<div class="ci"><div style="flex:1"><b>${it.name}</b><br><small>${it.price} ج.م</small></div><div><button onclick="chg('${it.name}',-1)">-</button> ${it.q} <button onclick="chg('${it.name}',1)">+</button></div></div>`});document.getElementById('items').innerHTML=h||'السلة فاضية';document.getElementById('cnt').textContent=q;document.getElementById('total').textContent=tot+' ج.م';const name=document.getElementById('nm').value,ph=document.getElementById('ph').value,ad=document.getElementById('ad').value;let lines=Object.values(cart).map(i=>`• ${i.name} × ${i.q} = ${i.q*i.price} ج.م`).join('\n');const txt=`طلب جديد - سرايا الألفي\nالاسم: ${name}\nالموبايل: ${ph}\nالعنوان: ${ad}\n\n${lines}\nالإجمالي: ${tot} ج.م`;const ok=q>0&&name.length>1&&ph.length>=10&&ad.length>3;const wa=document.getElementById('wa');if(ok)wa.href='https://wa.me/'+PH+'?text='+encodeURIComponent(txt);else wa.removeAttribute('href')}
+window.chg=(k,d)=>{if(!cart[k])return;cart[k].q+=d;if(cart[k].q<=0)delete cart[k];draw()}
+window.closeD=()=>document.getElementById('drawer').classList.remove('on');
+document.getElementById('open').onclick=()=>document.getElementById('drawer').classList.add('on');
+document.getElementById('chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('s'+b.dataset.i).scrollIntoView({behavior:'smooth'})};
+document.getElementById('q').oninput=e=>{const v=e.target.value.toLowerCase();document.querySelectorAll('.it').forEach(el=>{el.style.display=!v||el.dataset.t.toLowerCase().includes(v)?'':'none'})};
+['nm','ph','ad'].forEach(id=>document.getElementById(id).addEventListener('input',draw));
+build();draw();
+</script>
+</body>
+</html>
